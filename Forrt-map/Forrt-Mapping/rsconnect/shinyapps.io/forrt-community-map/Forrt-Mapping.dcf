@@ -1,0 +1,12 @@
+name: Forrt-Mapping
+title: Forrt-Mapping
+username: forrt-community-map
+account: forrt-community-map
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12304631
+bundleId: 9799927
+url: https://forrt-community-map.shinyapps.io/Forrt-Mapping/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
