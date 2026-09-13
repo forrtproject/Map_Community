@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.DS_Store
+__pycache__
+# Raw member export (personal data); only derived city counts are committed
+users.json
