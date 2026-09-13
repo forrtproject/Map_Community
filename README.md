@@ -5,7 +5,7 @@ All files live in `Forrt-map/Forrt-Mapping/`. The map itself is defined once in 
 
 | Output | Built by | Best for |
 | --- | --- | --- |
-| `forrt-map.html` (static, self-contained) | `Rscript generate_static_map.R` | Embedding in other pages |
+| `community_map.html` (static, self-contained) | `Rscript generate_static_map.R` | Embedding in other pages |
 | Shiny app ([shinyapps.io](https://forrt-community-map.shinyapps.io/Forrt-Mapping/)) | `app.R` | Standalone page with title and description |
 
 ### Embedding the map
@@ -13,7 +13,7 @@ All files live in `Forrt-map/Forrt-Mapping/`. The map itself is defined once in 
 
 ```html
 <iframe
-  src="https://forrtproject.github.io/map-community/Forrt-map/Forrt-Mapping/forrt-map.html"
+  src="https://forrtproject.github.io/map-community/Forrt-map/Forrt-Mapping/community_map.html"
   title="FORRT Community Map"
   style="width: 100%; height: 600px; border: 0;"
   loading="lazy">

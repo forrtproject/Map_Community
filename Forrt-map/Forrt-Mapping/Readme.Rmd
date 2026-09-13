@@ -24,7 +24,7 @@ From this folder (`Forrt-map/Forrt-Mapping/`):
 ### Project layout
 - `map_builder.R` – the map itself (tiles, markers, legend); shared by both outputs
 - `app.R` – Shiny app
-- `generate_static_map.R` – writes `forrt-map.html`
+- `generate_static_map.R` – writes `community_map.html`
 - `data/` – member cities and coordinates, plus the scripts that produce them
 
 ### Contributing
