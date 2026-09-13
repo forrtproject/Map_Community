@@ -1,2 +1,35 @@
-## Forrt Community Mapping 
+## Forrt Community Mapping
 The Forrt Mapping Project aims to visualize the global community of FORRT.
+
+Embedding the map and refreshing the member data are covered in the [root README](../../README.md).
+
+### Requirements
+- R with `shiny`, `leaflet`, `dplyr`, `htmlwidgets`
+- Python 3 with `pandas`, `geopy` (only for updating the data)
+
+```r
+install.packages(c("shiny", "leaflet", "dplyr", "htmlwidgets"))
+```
+
+### Run
+From this folder (`Forrt-map/Forrt-Mapping/`):
+
+| Task | Command |
+| --- | --- |
+| Run the Shiny app locally | `Rscript -e 'shiny::runApp()'` |
+| Map-only (embed) view | open the app URL with `?embed=true` |
+| Rebuild the static map | `Rscript generate_static_map.R` |
+| Deploy to shinyapps.io | `rsconnect::deployApp()` |
+
+### Project layout
+- `map_builder.R` – the map itself (tiles, markers, legend); shared by both outputs
+- `app.R` – Shiny app
+- `generate_static_map.R` – writes `community_map.html`
+- `data/` – member cities and coordinates, plus the scripts that produce them
+
+### Contributing
+1. Fork the repo and create a branch from `main`.
+2. Make map changes in `map_builder.R` so the app and static page stay identical.
+3. Check both outputs: run the app, and rebuild `forrt-map.html`.
+4. Commit the rebuilt `forrt-map.html` with your change.
+5. Open a pull request against `forrtproject/map-community` describing what changed.

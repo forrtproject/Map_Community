@@ -1,109 +1,92 @@
 library(shiny)
 library(leaflet)
-library(dplyr)
-library(shinyjs)
 
-# Load precomputed data
-coords_data <- read.csv("data/coords_data.csv") %>%
-  filter(!is.na(lon), !is.na(lat)) %>%
-  mutate(count = as.integer(count))
+source("map_builder.R")
 
-# Color palette for markers
-pal <- colorNumeric(
-  palette = "viridis",
-  domain = coords_data$count
+coords_data <- load_coords()
+
+# Iframe hosts append ?embed=true to get the map without the page title and description
+is_embed <- function(query_string) {
+  embed <- parseQueryString(query_string)$embed
+  isTRUE(tolower(embed) %in% c("true", "1", "yes"))
+}
+
+# The onRender hook in map_builder.R removes the element by its "loader" id; keep the two in sync
+loader_css <- "
+  #loader {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 4px solid #dddddd;
+    border-top-color: #555555;
+    border-radius: 50%;
+    animation: forrt-spin 0.8s linear infinite;
+    z-index: 1000;
+  }
+  @keyframes forrt-spin { to { transform: rotate(360deg); } }
+"
+
+loader <- div(id = "loader", role = "status", `aria-label` = "Loading map")
+
+# No min-height here (unlike full_ui): it would give a short iframe an inner scrollbar
+embed_ui <- fillPage(
+  title = "FORRT Community Map",
+  tags$head(tags$style(HTML(loader_css))),
+  loader,
+  leafletOutput("map", height = "100%")
 )
 
-ui <- fluidPage(
-  useShinyjs(),
+full_ui <- fluidPage(
   tags$head(
-    tags$style(HTML("
-      #loader {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 20px;
-        z-index: 1000;
+    tags$style(HTML(paste0(loader_css, "
+      .leaflet-container {
+        min-height: 600px !important;
       }
-      .leaflet-container { 
-        min-height: 600px !important; 
-      }
-    "))
+    ")))
   ),
   titlePanel("FORRT Community Map"),
   style = "max-width: 1200px; margin: 0 auto; padding: 10px;",
-  
+
   div(
     style = "max-width: 1200px; margin: 0 auto; padding: 10px;",
     p(
-      a(href = "https://forrt.org", 
+      a(href = "https://forrt.org",
         "Framework for Open and Reproducible Research Training",
         style = "font-weight: bold;"
       )
     ),
     p(
-      "The FORRT Community Map is a visualization tool that illustrates the global reach and
+      paste0("The FORRT Community Map is a visualization tool that illustrates the global reach and
  diversity of the Framework for Open and Reproducible Research Training (FORRT) community.
- As of January 2024, this map provides a snapshot of FORRT's members worldwide, 
+ As of ", DATA_SNAPSHOT, ", this map provides a snapshot of FORRT's members worldwide,
  highlighting FORRT's extensive international collaboration and
-  its commitment to fostering open and reproducible research practices across various regions. 
- The map underscores FORRT's dedication to inclusivity and its efforts to build a 
- diverse network of scholars, educators, and researchers united in advancing open science principles. ",
+  its commitment to fostering open and reproducible research practices across various regions.
+ The map underscores FORRT's dedication to inclusivity and its efforts to build a
+ diverse network of scholars, educators, and researchers united in advancing open science principles. ")
     ),
     mainPanel(
       width = 12,
-      div(id = "loader", "Loading map..."),
+      loader,
       leafletOutput("map", height = "75vh")
     )
-  
+
   )
 )
 
+# A UI function lets one deployment serve both layouts, picked per request from the URL
+ui <- function(req) {
+  if (is_embed(req$QUERY_STRING)) embed_ui else full_ui
+}
+
 server <- function(input, output, session) {
-  
-  #output$snapshot_date <- renderText(format(Sys.Date(), "%B %d, %Y"))
-  
-  filtered_data <- reactive({
-    coords_data
-  })
-  
   output$map <- renderLeaflet({
-    leaflet(options = leafletOptions(minZoom = 2, worldCopyJump = FALSE)) %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      setView(lng = 0, lat = 30, zoom = 2) %>%
-      addCircleMarkers(
-        data = coords_data,
-        radius = 5,
-        stroke = FALSE,
-        fillColor = ~pal(count),
-        fillOpacity = 0.8,
-        popup = ~glue::glue("<b>{city}</b><br>{count} member{ifelse(count == 1, '', 's')}"),
-        labelOptions = labelOptions(textsize = "14px")
-      ) %>%
-      addEasyButton(easyButton(
-        icon = "fa-home",
-        title = "Reset Map",
-        onClick = JS("function(btn, map){ map.setView([30, 0], 2); }")
-      )) %>%
-      addLegend(
-        position = "topright",
-        pal = pal,
-        values = coords_data$count,
-        title = "Members",
-        opacity = 0.8
-      ) %>%
-      htmlwidgets::onRender("function() { Shiny.setInputValue('map_loaded', true); }")
+    # isolate(): the layout was fixed when the UI was served, so URL changes must not re-render the map
+    embed <- is_embed(isolate(session$clientData$url_search))
+    build_forrt_map(coords_data, scroll_guard = embed)
   })
-  
-  observeEvent(input$map_loaded, hide("loader"))
-  
-  observeEvent(input$reset, {
-    leafletProxy("map") %>% 
-      setView(lng = 0, lat = 30, zoom = 2)
-  })
-  
-  
 }
 
 shinyApp(ui, server)

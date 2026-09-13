@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>leaflet</title>
+<title>FORRT Community Map</title>
 <style type="text/css">@layer htmltools {
 .html-fill-container {
 display: flex;
@@ -4067,7 +4067,7 @@ function asArray(value) {
 
 },{}]},{},[13]);
 </script>
-<script>(function (root, factory) {
+<script>(function(root, factory) {
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(['leaflet'], factory);
@@ -4078,11 +4078,11 @@ function asArray(value) {
 		// Assume Leaflet is loaded into global object L already
 		factory(L);
 	}
-}(this, function (L) {
+}(this, function(L) {
 	'use strict';
 
 	L.TileLayer.Provider = L.TileLayer.extend({
-		initialize: function (arg, options) {
+		initialize: function(arg, options) {
 			var providers = L.TileLayer.Provider.providers;
 
 			var parts = arg.split('.');
@@ -4121,12 +4121,13 @@ function asArray(value) {
 
 			// replace attribution placeholders with their values from toplevel provider attribution,
 			// recursively
-			var attributionReplacer = function (attr) {
+			var attributionReplacer = function(attr) {
 				if (attr.indexOf('{attribution.') === -1) {
 					return attr;
 				}
-				return attr.replace(/\{attribution.(\w*)\}/g,
-					function (match, attributionName) {
+				return attr.replace(
+					/\{attribution.(\w*)\}/g,
+					function(match, attributionName) {
 						return attributionReplacer(providers[attributionName].options.attribution);
 					}
 				);
@@ -4188,6 +4189,12 @@ function asArray(value) {
 					options: {
 						attribution: '{attribution.OpenStreetMap}, Tiles courtesy of <a href="http://www.openstreetmap.bzh/" target="_blank">Breton OpenStreetMap Team</a>',
 						bounds: [[46.2, -5.5], [50, 0.7]]
+					}
+				},
+				CAT: {
+					url: 'https://tile.openstreetmap.bzh/ca/{z}/{x}/{y}.png',
+					options: {
+						attribution: '{attribution.OpenStreetMap}, Tiles courtesy of <a href="https://www.openstreetmap.cat" target="_blank">Breton OpenStreetMap Team</a>',
 					}
 				}
 			}
@@ -4277,6 +4284,17 @@ function asArray(value) {
 			variants: {
 				AlidadeSmooth: 'alidade_smooth',
 				AlidadeSmoothDark: 'alidade_smooth_dark',
+				AlidadeSatellite: {
+					options: {
+						attribution:
+						  '&copy; CNES, Distribution Airbus DS, © Airbus DS, © PlanetObserver (Contains Copernicus Data) | ' +
+							'&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> ' +
+							'&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> ' +
+							'{attribution.OpenStreetMap}',
+						variant: 'alidade_satellite',
+						ext: 'jpg',
+					}
+				},
 				OSMBright: 'osm_bright',
 				Outdoors: 'outdoors',
 				StamenToner: {
@@ -4394,7 +4412,7 @@ function asArray(value) {
 			}
 		},
 		Thunderforest: {
-			url: 'https://{s}.tile.thunderforest.com/{variant}/{z}/{x}/{y}.png?apikey={apikey}',
+			url: 'https://{s}.tile.thunderforest.com/{variant}/{z}/{x}/{y}{r}.png?apikey={apikey}',
 			options: {
 				attribution:
 					'&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, {attribution.OpenStreetMap}',
@@ -4426,6 +4444,17 @@ function asArray(value) {
 				Neighbourhood: 'neighbourhood'
 			}
 		},
+		BaseMapDE: {
+			url: 'https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/{variant}/default/GLOBAL_WEBMERCATOR/{z}/{y}/{x}.png',
+			options: {
+				attribution: 'Map data: &copy; <a href="http://www.govdata.de/dl-de/by-2-0">dl-de/by-2-0</a>',
+				variant: 'de_basemapde_web_raster_farbe',
+			},
+			variants: {
+				Color: 'de_basemapde_web_raster_farbe',
+				Grey: 'de_basemapde_web_raster_grau'
+			}
+		},
 		CyclOSM: {
 			url: 'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',
 			options: {
@@ -4434,15 +4463,14 @@ function asArray(value) {
 			}
 		},
 		Jawg: {
-			url: 'https://{s}.tile.jawg.io/{variant}/{z}/{x}/{y}{r}.png?access-token={accessToken}',
+			url: 'https://tile.jawg.io/{variant}/{z}/{x}/{y}{r}.png?access-token={accessToken}',
 			options: {
 				attribution:
-					'<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> ' +
+					'<a href="https://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> ' +
 					'{attribution.OpenStreetMap}',
 				minZoom: 0,
 				maxZoom: 22,
-				subdomains: 'abcd',
-				variant: 'jawg-terrain',
+				variant: 'jawg-streets',
 				// Get your own Jawg access token here : https://www.jawg.io/lab/
 				// NB : this is a demonstration key that comes with no guarantee
 				accessToken: '<insert your access token here>',
@@ -4450,6 +4478,7 @@ function asArray(value) {
 			variants: {
 				Streets: 'jawg-streets',
 				Terrain: 'jawg-terrain',
+				Lagoon: 'jawg-lagoon',
 				Sunny: 'jawg-sunny',
 				Dark: 'jawg-dark',
 				Light: 'jawg-light',
@@ -4484,9 +4513,9 @@ function asArray(value) {
 				maxZoom: 21
 			},
 			variants: {
-				Streets: 'streets',
-				Basic: 'basic',
-				Bright: 'bright',
+				Streets: 'streets-v2',
+				Basic: 'basic-v2',
+				Bright: 'bright-v2',
 				Pastel: 'pastel',
 				Positron: 'positron',
 				Hybrid: {
@@ -4495,9 +4524,35 @@ function asArray(value) {
 						ext: 'jpg'
 					}
 				},
-				Toner: 'toner',
-				Topo: 'topo',
-				Voyager: 'voyager'
+				Toner: 'toner-v2',
+				Topo: 'topo-v2',
+				Voyager: 'voyager-v2',
+				Ocean: 'ocean',
+				Backdrop: 'backdrop',
+				Dataviz: 'dataviz',
+				DatavizLight: 'dataviz-light',
+				DatavizDark: 'dataviz-dark',
+				Aquarelle: {
+					options: {
+						variant: 'aquarelle',
+						ext: 'webp'
+					}
+				},
+				Landscape: 'landscape',
+				Openstreetmap: {
+					options: {
+						variant: 'openstreetmap',
+						ext: 'jpg'
+					}
+				},
+				Outdoor: 'outdoor-v2',
+				Satellite: {
+					options: {
+						variant: 'satellite',
+						ext: 'jpg'
+					}
+				},
+				Winter: 'winter-v2',
 			}
 		},
 		TomTom: {
@@ -4530,14 +4585,6 @@ function asArray(value) {
 						attribution:
 							'{attribution.Esri} &mdash; ' +
 							'Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
-					}
-				},
-				DeLorme: {
-					options: {
-						variant: 'Specialty/DeLorme_World_Base_Map',
-						minZoom: 1,
-						maxZoom: 11,
-						attribution: '{attribution.Esri} &mdash; Copyright: &copy;2012 DeLorme'
 					}
 				},
 				WorldTopoMap: {
@@ -4624,147 +4671,29 @@ function asArray(value) {
 				Snow: 'snow'
 			}
 		},
+
 		HERE: {
-			/*
-			 * HERE maps, formerly Nokia maps.
-			 * These basemaps are free, but you need an api id and app key. Please sign up at
-			 * https://developer.here.com/plans
-			 */
-			url:
-				'https://{s}.{base}.maps.api.here.com/maptile/2.1/' +
-				'{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?' +
-				'app_id={app_id}&app_code={app_code}&lg={language}',
-			options: {
-				attribution:
-					'Map &copy; 1987-' + new Date().getFullYear() + ' <a href="http://developer.here.com">HERE</a>',
-				subdomains: '1234',
-				mapID: 'newest',
-				'app_id': '<insert your app_id here>',
-				'app_code': '<insert your app_code here>',
-				base: 'base',
-				variant: 'normal.day',
-				maxZoom: 20,
-				type: 'maptile',
-				language: 'eng',
-				format: 'png8',
-				size: '256'
-			},
-			variants: {
-				normalDay: 'normal.day',
-				normalDayCustom: 'normal.day.custom',
-				normalDayGrey: 'normal.day.grey',
-				normalDayMobile: 'normal.day.mobile',
-				normalDayGreyMobile: 'normal.day.grey.mobile',
-				normalDayTransit: 'normal.day.transit',
-				normalDayTransitMobile: 'normal.day.transit.mobile',
-				normalDayTraffic: {
-					options: {
-						variant: 'normal.traffic.day',
-						base: 'traffic',
-						type: 'traffictile'
-					}
-				},
-				normalNight: 'normal.night',
-				normalNightMobile: 'normal.night.mobile',
-				normalNightGrey: 'normal.night.grey',
-				normalNightGreyMobile: 'normal.night.grey.mobile',
-				normalNightTransit: 'normal.night.transit',
-				normalNightTransitMobile: 'normal.night.transit.mobile',
-				reducedDay: 'reduced.day',
-				reducedNight: 'reduced.night',
-				basicMap: {
-					options: {
-						type: 'basetile'
-					}
-				},
-				mapLabels: {
-					options: {
-						type: 'labeltile',
-						format: 'png'
-					}
-				},
-				trafficFlow: {
-					options: {
-						base: 'traffic',
-						type: 'flowtile'
-					}
-				},
-				carnavDayGrey: 'carnav.day.grey',
-				hybridDay: {
-					options: {
-						base: 'aerial',
-						variant: 'hybrid.day'
-					}
-				},
-				hybridDayMobile: {
-					options: {
-						base: 'aerial',
-						variant: 'hybrid.day.mobile'
-					}
-				},
-				hybridDayTransit: {
-					options: {
-						base: 'aerial',
-						variant: 'hybrid.day.transit'
-					}
-				},
-				hybridDayGrey: {
-					options: {
-						base: 'aerial',
-						variant: 'hybrid.grey.day'
-					}
-				},
-				hybridDayTraffic: {
-					options: {
-						variant: 'hybrid.traffic.day',
-						base: 'traffic',
-						type: 'traffictile'
-					}
-				},
-				pedestrianDay: 'pedestrian.day',
-				pedestrianNight: 'pedestrian.night',
-				satelliteDay: {
-					options: {
-						base: 'aerial',
-						variant: 'satellite.day'
-					}
-				},
-				terrainDay: {
-					options: {
-						base: 'aerial',
-						variant: 'terrain.day'
-					}
-				},
-				terrainDayMobile: {
-					options: {
-						base: 'aerial',
-						variant: 'terrain.day.mobile'
-					}
-				}
-			}
-		},
-		HEREv3: {
+
 			/*
 			 * HERE maps API Version 3.
+			 * documentation at: https://www.here.com/docs/bundle/raster-tile-api-developer-guide/page/README.html
 			 * These basemaps are free, but you need an API key. Please sign up at
-			 * https://developer.here.com/plans
+			 * https://platform.here.com/portal/
+			 * Subscription remains for free, pricing details can be found here: https://www.here.com/get-started/pricing
 			 * Version 3 deprecates the app_id and app_code access in favor of apiKey
-			 *
-			 * Supported access methods as of 2019/12/21:
-			 * @see https://developer.here.com/faqs#access-control-1--how-do-you-control-access-to-here-location-services
 			 */
 			url:
-				'https://{s}.{base}.maps.ls.hereapi.com/maptile/2.1/' +
-				'{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?' +
-				'apiKey={apiKey}&lg={language}',
+				'https://maps.hereapi.com/v3/base/mc/' + // new base url for HERE maptile v3 api
+				'{z}/{x}/{y}/{format}?style={variant}&size={size}' + // slightly modified parameters
+				'&apiKey={app_id}&lg={language}', // replacing app-id with apikey
 			options: {
 				attribution:
-					'Map &copy; 1987-' + new Date().getFullYear() + ' <a href="http://developer.here.com">HERE</a>',
+					'Map &copy; 1987-' + new Date().getFullYear() + ' <a href="http://platform.here.com">HERE</a>',
 				subdomains: '1234',
 				mapID: 'newest',
-				apiKey: '<insert your apiKey here>',
+				apiKey: '<insert your apiKey here>', // switching from appid and appcode to apikey
 				base: 'base',
-				variant: 'normal.day',
+				variant: 'explore.day',
 				maxZoom: 20,
 				type: 'maptile',
 				language: 'eng',
@@ -4772,21 +4701,17 @@ function asArray(value) {
 				size: '256'
 			},
 			variants: {
-				normalDay: 'normal.day',
-				normalDayCustom: 'normal.day.custom',
-				normalDayGrey: 'normal.day.grey',
-				normalDayMobile: 'normal.day.mobile',
-				normalDayGreyMobile: 'normal.day.grey.mobile',
-				normalDayTransit: 'normal.day.transit',
-				normalDayTransitMobile: 'normal.day.transit.mobile',
-				normalNight: 'normal.night',
-				normalNightMobile: 'normal.night.mobile',
-				normalNightGrey: 'normal.night.grey',
-				normalNightGreyMobile: 'normal.night.grey.mobile',
-				normalNightTransit: 'normal.night.transit',
-				normalNightTransitMobile: 'normal.night.transit.mobile',
-				reducedDay: 'reduced.day',
-				reducedNight: 'reduced.night',
+				exploreDay: 'explore.day',
+				liteDay: 'lite.day',
+				logisticsDay: 'logistics.day',
+				topoDay: 'topo.day',
+				logisticsNight: 'logistics.night',
+				exploreNight: 'explore.night',
+				topoNight: 'topo.night',
+				liteNight: 'lite.night',
+				exploreSatelliteDay: 'explore.satellite.day',
+				liteSatelliteDay: 'lite.satellite.day',
+				logisticsSatelliteDay: 'logistics.satellite.day',
 				basicMap: {
 					options: {
 						type: 'basetile'
@@ -4964,12 +4889,12 @@ function asArray(value) {
 				attribution: 'Kaartgegevens &copy; <a href="https://www.kadaster.nl">Kadaster</a>'
 			},
 			variants: {
-				'standaard': 'standaard',
-				'pastel': 'pastel',
-				'grijs': 'grijs',
-				'water': 'water',
-				'luchtfoto': {
-					'url': 'https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0/Actueel_ortho25/EPSG:3857/{z}/{x}/{y}.jpeg',
+				standaard: 'standaard',
+				pastel: 'pastel',
+				grijs: 'grijs',
+				water: 'water',
+				luchtfoto: {
+					url: 'https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0/Actueel_ortho25/EPSG:3857/{z}/{x}/{y}.jpeg',
 				}
 			}
 		},
@@ -5021,7 +4946,7 @@ function asArray(value) {
 				},
 				ModisTerraChlorophyll: {
 					options: {
-						variant: 'MODIS_Terra_Chlorophyll_A',
+						variant: 'MODIS_Terra_L2_Chlorophyll_A',
 						format: 'png',
 						maxZoom: 7,
 						opacity: 0.75
@@ -5031,20 +4956,29 @@ function asArray(value) {
 		},
 		NLS: {
 			// NLS maps are copyright National library of Scotland.
-			// http://maps.nls.uk/projects/api/index.html
+			// http://maps.nls.uk/projects/subscription-api
 			// Please contact NLS for anything other than non-commercial low volume usage
 			//
-			// Map sources: Ordnance Survey 1:1m to 1:63K, 1920s-1940s
+			// Map sources: Ordnance Survey 1:1m to 1:63K, 1880s-1961
 			//   z0-9  - 1:1m
 			//  z10-11 - quarter inch (1:253440)
 			//  z12-18 - one inch (1:63360)
-			url: 'https://nls-{s}.tileserver.com/nls/{z}/{x}/{y}.jpg',
+			url: 'https://api.maptiler.com/tiles/{variant}/{z}/{x}/{y}.jpg?key={apikey}',
 			options: {
-				attribution: '<a href="http://geo.nls.uk/maps/">National Library of Scotland Historic Maps</a>',
+				attribution: '<a href="http://maps.nls.uk/projects/subscription-api">National Library of Scotland Historic Maps</a>',
 				bounds: [[49.6, -12], [61.7, 3]],
 				minZoom: 1,
 				maxZoom: 18,
-				subdomains: '0123',
+				apikey: '<insert your api key here>'
+			},
+			variants: {
+				osgb63k1885: 'uk-osgb63k1885',
+				osgb1888: 'uk-osgb1888',
+				osgb10k1888: 'uk-osgb10k1888',
+				osgb1919: 'uk-osgb1919',
+				osgb25k1937: 'uk-osgb25k1937',
+				osgb63k1955: 'uk-osgb63k1955',
+				oslondon1k1893: 'uk-oslondon1k1893'
 			}
 		},
 		JusticeMap: {
@@ -5072,15 +5006,12 @@ function asArray(value) {
 			}
 		},
 		GeoportailFrance: {
-			url: 'https://wxs.ign.fr/{apikey}/geoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER={variant}&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
+			url: 'https://data.geopf.fr/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER={variant}&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
 			options: {
 				attribution: '<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
 				bounds: [[-75, -180], [81, 180]],
 				minZoom: 2,
 				maxZoom: 18,
-				// Get your own geoportail apikey here : http://professionnels.ign.fr/ign/contrats/
-				// NB : 'choisirgeoportail' is a demonstration key that comes with no guarantee
-				apikey: 'choisirgeoportail',
 				format: 'image/png',
 				style: 'normal',
 				variant: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2'
@@ -5175,9 +5106,9 @@ function asArray(value) {
 			}
 		},
 		AzureMaps: {
-			url: 
-				'https://atlas.microsoft.com/map/tile?api-version={apiVersion}'+
-				'&tilesetId={variant}&x={x}&y={y}&zoom={z}&language={language}'+
+			url:
+				'https://atlas.microsoft.com/map/tile?api-version={apiVersion}' +
+				'&tilesetId={variant}&x={x}&y={y}&zoom={z}&language={language}' +
 				'&subscription-key={subscriptionKey}',
 			options: {
 				attribution: 'See https://docs.microsoft.com/en-us/rest/api/maps/render-v2/get-map-tile for details.',
@@ -5193,9 +5124,9 @@ function asArray(value) {
 				MicrosoftBaseHybridRoad: 'microsoft.base.hybrid.road',
 				MicrosoftTerraMain: 'microsoft.terra.main',
 				MicrosoftWeatherInfraredMain: {
-					url: 
-					'https://atlas.microsoft.com/map/tile?api-version={apiVersion}'+
-					'&tilesetId={variant}&x={x}&y={y}&zoom={z}'+
+					url:
+					'https://atlas.microsoft.com/map/tile?api-version={apiVersion}' +
+					'&tilesetId={variant}&x={x}&y={y}&zoom={z}' +
 					'&timeStamp={timeStamp}&language={language}' +
 					'&subscription-key={subscriptionKey}',
 					options: {
@@ -5205,9 +5136,9 @@ function asArray(value) {
 					},
 				},
 				MicrosoftWeatherRadarMain: {
-					url: 
-					'https://atlas.microsoft.com/map/tile?api-version={apiVersion}'+
-					'&tilesetId={variant}&x={x}&y={y}&zoom={z}'+
+					url:
+					'https://atlas.microsoft.com/map/tile?api-version={apiVersion}' +
+					'&tilesetId={variant}&x={x}&y={y}&zoom={z}' +
 					'&timeStamp={timeStamp}&language={language}' +
 					'&subscription-key={subscriptionKey}',
 					options: {
@@ -5236,10 +5167,22 @@ function asArray(value) {
 					}
 				}
 			}
+		},
+		TopPlusOpen: {
+			url: 'http://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/{variant}/default/WEBMERCATOR/{z}/{y}/{x}.png',
+			options: {
+				maxZoom: 18,
+				attribution: 'Map data: &copy; <a href="http://www.govdata.de/dl-de/by-2-0">dl-de/by-2-0</a>',
+				variant: 'web',
+			},
+			variants: {
+				Color: 'web',
+				Grey: 'web_grau'
+			}
 		}
 	};
 
-	L.tileLayer.provider = function (provider, options) {
+	L.tileLayer.provider = function(provider, options) {
 		return new L.TileLayer.Provider(provider, options);
 	};
 
@@ -5721,9 +5664,9 @@ LeafletWidget.methods.addEasyButtonBar = function(buttons, position, id) {
 </head>
 <body style="background-color: white;">
 <div id="htmlwidget_container">
-  <div class="leaflet html-widget html-fill-item" id="htmlwidget-7dce3bd3568ad49391f0" style="width:100%;height:400px;"></div>
+  <div class="leaflet html-widget html-fill-item" id="htmlwidget-6e6e39c42f1b04f8c597" style="width:100%;height:400px;"></div>
 </div>
-<script type="application/json" data-for="htmlwidget-7dce3bd3568ad49391f0">{"x":{"options":{"minZoom":2,"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addCircleMarkers","args":[[-34.9281805,36.7729333,52.3730796,61.2163129,33.9597677,-36.852095,33.3061701,-12.285251,13.7524938,44.8178131,17.1204943,4.6533816,-27.4689682,50.8465573,-34.6083696,30.0443879,-35.2975906,21.1527467,33.5945144,41.8755616,30.05518,39.7392364,23.7544529,44.648618,-17.8567035,23.135305,60.1674881,40.3270127,41.0766019,31.7788242,22.5726459,3.1526589,29.3796532,51.5074456,34.0536909,19.4326296,6.328034,55.625578,23.5882019,-1.30261485,40.7127281,-31.9558933,33.4484367,50.4479733,9.869479200000001,-23.5506507,37.5666791,25.0375198,35.6892523,35.6768601,32.896672,52.2337172],[138.5999312,3.0588445,4.8924534,-149.894852,-83.37639799999999,174.7631803,44.3872213,-41.9294776,100.4935089,20.4568974,-88.68590279999999,-74.0836333,153.0234991,4.351697,-58.4440583,31.2357257,149.1012676,-86.8425761,-7.6200284,-87.6244212,107.8748712,-104.984862,90.39333600000001,-63.5859487,31.0601584,-82.3589631,24.9427473,-86.1746933,29.052495,35.2257626,88.3638953,101.7022205,47.9734174,-0.1277653,-118.242766,-99.1331785,-10.797788,37.6063916,58.3829448,36.82884201813725,-74.00601519999999,115.8605855,-112.074141,-104.6158764,-83.7980749,-46.6333824,126.9782914,121.5636796,51.3896004,139.7638947,13.1777923,21.07143223563649],[5.939318758485322,7.16703787691222,11.66933841496675,5.545177444479562,7.465056165035486,5.939318758485322,5.545177444479562,5.545177444479562,5.545177444479562,8.460924839660033,5.545177444479562,5.939318758485322,6.437751649736401,8.713051244665392,7.273785836928267,6.622283322716608,6.782087916458575,5.545177444479562,5.545177444479562,9.210340371976184,8.214356683016479,6.622283322716608,5.545177444479562,5.545177444479562,6.437751649736401,5.545177444479562,6.622283322716608,5.545177444479562,7.273785836928267,5.545177444479562,8.366972026587735,6.923613127747038,9.56869901557636,11.76455044795364,9.266515435626689,6.437751649736401,5.939318758485322,7.050988696156344,5.939318758485322,6.217434732305743,10.71746060407857,5.939318758485322,6.217434732305743,5.545177444479562,5.939318758485322,8.044723584093065,6.437751649736401,6.437751649736401,6.782087916458575,6.437751649736401,5.545177444479562,7.983641285948684],null,null,{"interactive":true,"className":"","stroke":true,"color":"#444444","weight":1,"opacity":0.5,"fill":true,"fillColor":["#440256","#470D60","#DAE319","#440154","#471164","#440256","#440154","#440154","#440154","#482677","#440154","#440256","#450559","#472E7C","#470E61","#46075A","#46085C","#440154","#440154","#424086","#482071","#46075A","#440154","#440154","#450559","#440154","#46075A","#440154","#470E61","#440154","#482475","#460A5D","#3C508B","#FDE725","#414387","#450559","#440256","#460B5E","#440256","#450457","#1F968B","#440256","#450457","#440154","#440256","#481C6E","#450559","#450559","#46085C","#450559","#440154","#481B6D"],"fillOpacity":0.9},null,null,["<b>Adelaide<\/b><br>2 members","<b>Algiers<\/b><br>9 members","<b>Amsterdam<\/b><br>240 members","<b>Anchorage<\/b><br>1 member","<b>Athens<\/b><br>12 members","<b>Auckland<\/b><br>2 members","<b>Baghdad<\/b><br>1 member","<b>Bahia<\/b><br>1 member","<b>Bangkok<\/b><br>1 member","<b>Belgrade<\/b><br>28 members","<b>Belize<\/b><br>1 member","<b>Bogota<\/b><br>2 members","<b>Brisbane<\/b><br>4 members","<b>Brussels<\/b><br>34 members","<b>Buenos_Aires<\/b><br>10 members","<b>Cairo<\/b><br>5 members","<b>Canberra<\/b><br>6 members","<b>Cancun<\/b><br>1 member","<b>Casablanca<\/b><br>1 member","<b>Chicago<\/b><br>49 members","<b>Chongqing<\/b><br>23 members","<b>Denver<\/b><br>5 members","<b>Dhaka<\/b><br>1 member","<b>Halifax<\/b><br>1 member","<b>Harare<\/b><br>4 members","<b>Havana<\/b><br>1 member","<b>Helsinki<\/b><br>5 members","<b>Indiana<\/b><br>1 member","<b>Istanbul<\/b><br>10 members","<b>Jerusalem<\/b><br>1 member","<b>Kolkata<\/b><br>26 members","<b>Kuala_Lumpur<\/b><br>7 members","<b>Kuwait<\/b><br>63 members","<b>London<\/b><br>254 members","<b>Los_Angeles<\/b><br>51 members","<b>Mexico_City<\/b><br>4 members","<b>Monrovia<\/b><br>2 members","<b>Moscow<\/b><br>8 members","<b>Muscat<\/b><br>2 members","<b>Nairobi<\/b><br>3 members","<b>New_York<\/b><br>134 members","<b>Perth<\/b><br>2 members","<b>Phoenix<\/b><br>3 members","<b>Regina<\/b><br>1 member","<b>Santiago<\/b><br>2 members","<b>Sao_Paulo<\/b><br>20 members","<b>Seoul<\/b><br>4 members","<b>Taipei<\/b><br>4 members","<b>Tehran<\/b><br>6 members","<b>Tokyo<\/b><br>4 members","<b>Tripoli<\/b><br>1 member","<b>Warsaw<\/b><br>19 members"],null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"14px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLegend","args":[{"colors":["#440154 , #424186 19.3675889328063%, #2A768E 39.1304347826087%, #21A585 58.8932806324111%, #72D056 78.6561264822134%, #F4E61E 98.4189723320158%, #FDE725 "],"labels":["50","100","150","200","250"],"na_color":null,"na_label":"NA","opacity":0.9,"position":"topright","type":"numeric","title":"Members","extra":{"p_1":0.1936758893280632,"p_n":0.9841897233201581},"layerId":null,"className":"info legend","group":null}]},{"method":"addEasyButton","args":[{"icon":"fa-home","title":"Reset Map","onClick":"function(btn, map){ map.setView([30, 0], 2); }","position":"topleft"}]},{"method":"addControl","args":["<div><\/div>","topright",null,"info legend"]}],"setView":[[30,0],2,[]],"limits":{"lat":[-36.852095,61.2163129],"lng":[-149.894852,174.7631803]}},"evals":["calls.3.args.0.onClick"],"jsHooks":[]}</script>
-<script type="application/htmlwidget-sizing" data-for="htmlwidget-7dce3bd3568ad49391f0">{"viewer":{"width":"100%","height":400,"padding":0,"fill":true},"browser":{"width":"100%","height":400,"padding":0,"fill":true}}</script>
+<script type="application/json" data-for="htmlwidget-6e6e39c42f1b04f8c597">{"x":{"options":{"minZoom":2,"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}},"zoomSnap":0.5,"wheelPxPerZoomLevel":120,"maxBounds":[[-85,-180],[85,180]],"maxBoundsViscosity":1,"scrollWheelZoom":false},"calls":[{"method":"addProviderTiles","args":["Esri.WorldGrayCanvas",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addTiles","args":["https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}",null,null,{"minZoom":0,"maxZoom":16,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false}]},{"method":"addCircleMarkers","args":[[51.5074456,52.3730796,40.7127281,29.3796532,34.0536909,41.8755616,50.8465573,44.8178131,22.5726459,30.05518,-23.5506507,52.2337172,33.9597677,-34.6083696,41.0766019,36.7729333,55.625578,3.1526589,-35.2975906,35.6892523,30.0443879,39.7392364,60.1674881,-27.4689682,-17.8567035,19.4326296,37.5666791,25.0375198,35.6768601,-1.30261485,33.4484367,-34.9281805,-36.852095,4.6533816,6.328034,23.5882019,-31.9558933,9.869479200000001,61.2163129,33.3061701,-12.285251,13.7524938,17.1204943,21.1527467,33.5945144,23.7544529,44.648618,23.135305,40.3270127,31.7788242,50.4479733,32.896672],[-0.1277653,4.8924534,-74.00601519999999,47.9734174,-118.242766,-87.6244212,4.351697,20.4568974,88.3638953,107.8748712,-46.6333824,21.07143223563649,-83.37639799999999,-58.4440583,29.052495,3.0588445,37.6063916,101.7022205,149.1012676,51.3896004,31.2357257,-104.984862,24.9427473,153.0234991,31.0601584,-99.1331785,126.9782914,121.5636796,139.7638947,36.82884201813725,-112.074141,138.5999312,174.7631803,-74.0836333,-10.797788,58.3829448,115.8605855,-83.7980749,-149.894852,44.3872213,-41.9294776,100.4935089,-88.68590279999999,-86.8425761,-7.6200284,90.39333600000001,-63.5859487,-82.3589631,-86.1746933,35.2257626,-104.6158764,13.1777923],[11.76455044795364,11.66933841496675,10.71746060407857,9.56869901557636,9.266515435626689,9.210340371976184,8.713051244665392,8.460924839660033,8.366972026587735,8.214356683016479,8.044723584093065,7.983641285948684,7.465056165035486,7.273785836928267,7.273785836928267,7.16703787691222,7.050988696156344,6.923613127747038,6.782087916458575,6.782087916458575,6.622283322716608,6.622283322716608,6.622283322716608,6.437751649736401,6.437751649736401,6.437751649736401,6.437751649736401,6.437751649736401,6.437751649736401,6.217434732305743,6.217434732305743,5.939318758485322,5.939318758485322,5.939318758485322,5.939318758485322,5.939318758485322,5.939318758485322,5.939318758485322,5.545177444479562,5.545177444479562,5.545177444479562,5.545177444479562,5.545177444479562,5.545177444479562,5.545177444479562,5.545177444479562,5.545177444479562,5.545177444479562,5.545177444479562,5.545177444479562,5.545177444479562,5.545177444479562],null,null,{"interactive":true,"className":"","stroke":true,"color":"#444444","weight":1,"opacity":0.5,"fill":true,"fillColor":["#FDE725","#9FDA3A","#4AC16D","#1FA187","#1FA187","#277F8E","#277F8E","#277F8E","#277F8E","#277F8E","#277F8E","#365C8D","#365C8D","#365C8D","#365C8D","#46327E","#46327E","#46327E","#46327E","#46327E","#46327E","#46327E","#46327E","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154","#440154"],"fillOpacity":0.9},null,null,["<b>London<\/b><br>254 members","<b>Amsterdam<\/b><br>240 members","<b>New York<\/b><br>134 members","<b>Kuwait<\/b><br>63 members","<b>Los Angeles<\/b><br>51 members","<b>Chicago<\/b><br>49 members","<b>Brussels<\/b><br>34 members","<b>Belgrade<\/b><br>28 members","<b>Kolkata<\/b><br>26 members","<b>Chongqing<\/b><br>23 members","<b>Sao Paulo<\/b><br>20 members","<b>Warsaw<\/b><br>19 members","<b>Athens<\/b><br>12 members","<b>Buenos Aires<\/b><br>10 members","<b>Istanbul<\/b><br>10 members","<b>Algiers<\/b><br>9 members","<b>Moscow<\/b><br>8 members","<b>Kuala Lumpur<\/b><br>7 members","<b>Canberra<\/b><br>6 members","<b>Tehran<\/b><br>6 members","<b>Cairo<\/b><br>5 members","<b>Denver<\/b><br>5 members","<b>Helsinki<\/b><br>5 members","<b>Brisbane<\/b><br>4 members","<b>Harare<\/b><br>4 members","<b>Mexico City<\/b><br>4 members","<b>Seoul<\/b><br>4 members","<b>Taipei<\/b><br>4 members","<b>Tokyo<\/b><br>4 members","<b>Nairobi<\/b><br>3 members","<b>Phoenix<\/b><br>3 members","<b>Adelaide<\/b><br>2 members","<b>Auckland<\/b><br>2 members","<b>Bogota<\/b><br>2 members","<b>Monrovia<\/b><br>2 members","<b>Muscat<\/b><br>2 members","<b>Perth<\/b><br>2 members","<b>Santiago<\/b><br>2 members","<b>Anchorage<\/b><br>1 member","<b>Baghdad<\/b><br>1 member","<b>Bahia<\/b><br>1 member","<b>Bangkok<\/b><br>1 member","<b>Belize<\/b><br>1 member","<b>Cancun<\/b><br>1 member","<b>Casablanca<\/b><br>1 member","<b>Dhaka<\/b><br>1 member","<b>Halifax<\/b><br>1 member","<b>Havana<\/b><br>1 member","<b>Indiana<\/b><br>1 member","<b>Jerusalem<\/b><br>1 member","<b>Regina<\/b><br>1 member","<b>Tripoli<\/b><br>1 member"],null,["London: 254 members","Amsterdam: 240 members","New York: 134 members","Kuwait: 63 members","Los Angeles: 51 members","Chicago: 49 members","Brussels: 34 members","Belgrade: 28 members","Kolkata: 26 members","Chongqing: 23 members","Sao Paulo: 20 members","Warsaw: 19 members","Athens: 12 members","Buenos Aires: 10 members","Istanbul: 10 members","Algiers: 9 members","Moscow: 8 members","Kuala Lumpur: 7 members","Canberra: 6 members","Tehran: 6 members","Cairo: 5 members","Denver: 5 members","Helsinki: 5 members","Brisbane: 4 members","Harare: 4 members","Mexico City: 4 members","Seoul: 4 members","Taipei: 4 members","Tokyo: 4 members","Nairobi: 3 members","Phoenix: 3 members","Adelaide: 2 members","Auckland: 2 members","Bogota: 2 members","Monrovia: 2 members","Muscat: 2 members","Perth: 2 members","Santiago: 2 members","Anchorage: 1 member","Baghdad: 1 member","Bahia: 1 member","Bangkok: 1 member","Belize: 1 member","Cancun: 1 member","Casablanca: 1 member","Dhaka: 1 member","Halifax: 1 member","Havana: 1 member","Indiana: 1 member","Jerusalem: 1 member","Regina: 1 member","Tripoli: 1 member"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"13px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLegend","args":[{"colors":["#440154","#46327E","#365C8D","#277F8E","#1FA187","#4AC16D","#9FDA3A","#FDE725"],"labels":["1+","5+","10+","20+","50+","100+","200+","250+"],"na_color":null,"na_label":"NA","opacity":0.9,"position":"topright","type":"unknown","title":"Members","extra":null,"layerId":null,"className":"info legend","group":null}]},{"method":"addEasyButton","args":[{"icon":"fa-home","title":"Reset Map","onClick":"function(btn, map){ map.setView([30, 0], 2); }","position":"topleft"}]}],"setView":[[30,0],2,[]],"limits":{"lat":[-36.852095,61.2163129],"lng":[-149.894852,174.7631803]}},"evals":["calls.4.args.0.onClick"],"jsHooks":{"render":[{"code":"function(el, x, data) {\n  return (function(el, x, data) {\n        var map = this;\n        // #loader exists only in the Shiny UI (app.R); the static page has no spinner\n        var loader = document.getElementById('loader');\n        if (loader) loader.remove();\n        if (data.scrollGuard) {\n          map.on('click', function() { map.scrollWheelZoom.enable(); });\n          // Re-arm the guard so page scrolling works again once the pointer leaves the map\n          map.on('mouseout', function() { map.scrollWheelZoom.disable(); });\n        }\n      }).call(this.getMap(), el, x, data);\n}","data":{"scrollGuard":true}}]}}</script>
+<script type="application/htmlwidget-sizing" data-for="htmlwidget-6e6e39c42f1b04f8c597">{"viewer":{"width":"100%","height":400,"padding":0,"fill":true},"browser":{"width":"100%","height":400,"padding":0,"fill":true}}</script>
 </body>
 </html>
